@@ -1,5 +1,6 @@
 #include "Engine.h"
 
+
 Engine::Engine(std::string model, double voltage, double power)
     : model(model), voltage(voltage), power(power) {}
 

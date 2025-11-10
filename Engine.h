@@ -1,30 +1,46 @@
-#ifndef ENGINE_H
-#define ENGINE_H
-
-#include <string>
+#pragma once
 #include <iostream>
+#include <string>
+#include <limits>
 
 class Engine {
 protected:
     std::string model;
-    double voltage;
-    double power;
-
+    double power;   // потужність, Вт
+    double voltage; // напруга, В
 public:
-    Engine(std::string model = "Unknown", double voltage = 0, double power = 0);
-    virtual ~Engine();
+    virtual ~Engine() {}
 
-    std::string getModel() const;
-    double getVoltage() const;
-    double getPower() const;
+    // універсальна функція для безпечного введення чисел
+    double getValidatedDouble(const std::string& prompt, double minVal = 0.0, double maxVal = 1e6) {
+        double val;
+        while (true) {
+            std::cout << prompt;
+            std::cin >> val;
+            if (std::cin.fail() || val < minVal || val > maxVal) {
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cout << "Помилка! Введіть число в діапазоні [" << minVal << ", " << maxVal << "].\n";
+            } else {
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                return val;
+            }
+        }
+    }
 
-    void setModel(const std::string& model);
-    void setVoltage(double voltage);
-    void setPower(double power);
+    virtual void inputData() {
+        std::cout << "Введіть модель двигуна: ";
+        std::getline(std::cin >> std::ws, model); // дозволяє багатослівні назви
 
-    virtual void inputData();
-    virtual void showData() const;
+        power = getValidatedDouble("Введіть потужність (Вт): ", 0.1);
+        voltage = getValidatedDouble("Введіть напругу (В): ", 0.1);
+    }
+
+    virtual void showData() const {
+        std::cout << "Модель: " << model << "\n"
+                  << "Потужність: " << power << " Вт\n"
+                  << "Напруга: " << voltage << " В\n";
+    }
+
     virtual double efficiency() const = 0;
 };
-
-#endif

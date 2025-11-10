@@ -1,19 +1,21 @@
-#ifndef STEPPERMOTOR_H
-#define STEPPERMOTOR_H
-
+#pragma once
 #include "Engine.h"
 
 class StepperMotor : public Engine {
-private:
-    int stepsPerRevolution;
-
+    int steps; // кроків на оберт
 public:
-    StepperMotor(std::string model = "Stepper", double voltage = 0, double power = 0, int steps = 0);
-    ~StepperMotor();
+    void inputData() override {
+        Engine::inputData();
+        steps = (int)getValidatedDouble("Введіть кількість кроків на оберт (1–10000): ", 1, 10000);
+    }
 
-    void inputData() override;
-    void showData() const override;
-    double efficiency() const override;
+    void showData() const override {
+        std::cout << "Тип: Кроковий двигун\n";
+        Engine::showData();
+        std::cout << "Кроків на оберт: " << steps << "\n";
+    }
+
+    double efficiency() const override {
+        return (voltage != 0) ? (power / voltage) : 0;
+    }
 };
-
-#endif
