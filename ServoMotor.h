@@ -1,22 +1,21 @@
-#pragma once
+#ifndef SERVOMOTOR_H
+#define SERVOMOTOR_H
+
 #include "Engine.h"
 
 class ServoMotor : public Engine {
-    double angle; // кут повороту
+private:
+    double angle;
+
 public:
-    void inputData() override {
-        Engine::inputData();
-        angle = getValidatedDouble("Введіть кут повороту (0–180°): ", 0, 180);
-    }
+    ServoMotor();
+    ServoMotor(const std::string& model, double voltage, double power, double angle);
 
-    void showData() const override {
-        std::cout << "Тип: Серводвигун\n";
-        Engine::showData();
-        std::cout << "Кут повороту: " << angle << "°\n";
-    }
+    double getAngle() const;
+    void setAngle(double angle);
 
-    double efficiency() const override {
-        // уникнення ділення на 0
-        return (voltage != 0) ? (power / voltage) : 0;
-    }
+    void input() override;
+    void print() const override;
 };
+
+#endif

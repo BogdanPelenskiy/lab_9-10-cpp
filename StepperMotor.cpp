@@ -1,24 +1,31 @@
 #include "StepperMotor.h"
 #include <iostream>
 
-StepperMotor::StepperMotor(std::string model, double voltage, double power, int steps)
+using namespace std;
+
+StepperMotor::StepperMotor()
+    : Engine(), stepsPerRevolution(0) {}
+
+StepperMotor::StepperMotor(const string& model, double voltage, double power, int steps)
     : Engine(model, voltage, power), stepsPerRevolution(steps) {}
 
-StepperMotor::~StepperMotor() {
-    std::cout << "Деструктор StepperMotor для " << model << std::endl;
+int StepperMotor::getStepsPerRevolution() const {
+    return stepsPerRevolution;
 }
 
-void StepperMotor::inputData() {
-    Engine::inputData();
-    std::cout << "Введіть кількість кроків на один оберт: ";
-    std::cin >> stepsPerRevolution;
+void StepperMotor::setStepsPerRevolution(int steps) {
+    stepsPerRevolution = steps;
 }
 
-void StepperMotor::showData() const {
-    Engine::showData();
-    std::cout << ", Кроків на оберт: " << stepsPerRevolution << std::endl;
+void StepperMotor::input() {
+    cout << "\n=== Ввід даних для крокового двигуна ===\n";
+    Engine::input();
+    stepsPerRevolution = getIntInput("Введіть кількість кроків на оберт (1–50000): ", 1, 50000);
 }
 
-double StepperMotor::efficiency() const {
-    return power / (voltage * stepsPerRevolution / 1000.0);
+void StepperMotor::print() const {
+    cout << "\n--- Інформація про двигун ---\n";
+    Engine::print();
+    cout << ", Кроків на оберт: " << stepsPerRevolution << "\n";
+    cout << "ККД: " << getEfficiency() << " %\n";
 }

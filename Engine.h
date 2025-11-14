@@ -1,46 +1,41 @@
-#pragma once
-#include <iostream>
+#ifndef ENGINE_H
+#define ENGINE_H
+
 #include <string>
-#include <limits>
+#include <iostream>
 
 class Engine {
 protected:
     std::string model;
-    double power;   // потужність, Вт
-    double voltage; // напруга, В
+    double voltage;
+    double power;
+
 public:
-    virtual ~Engine() {}
+    Engine();
+    Engine(const std::string& model, double voltage, double power);
+    virtual ~Engine();
 
-    // універсальна функція для безпечного введення чисел
-    double getValidatedDouble(const std::string& prompt, double minVal = 0.0, double maxVal = 1e6) {
-        double val;
-        while (true) {
-            std::cout << prompt;
-            std::cin >> val;
-            if (std::cin.fail() || val < minVal || val > maxVal) {
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                std::cout << "Помилка! Введіть число в діапазоні [" << minVal << ", " << maxVal << "].\n";
-            } else {
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                return val;
-            }
-        }
-    }
+    // Гетери
+    std::string getModel() const;
+    double getVoltage() const;
+    double getPower() const;
 
-    virtual void inputData() {
-        std::cout << "Введіть модель двигуна: ";
-        std::getline(std::cin >> std::ws, model); // дозволяє багатослівні назви
+    // Сетери
+    void setModel(const std::string& model);
+    void setVoltage(double voltage);
+    void setPower(double power);
 
-        power = getValidatedDouble("Введіть потужність (Вт): ", 0.1);
-        voltage = getValidatedDouble("Введіть напругу (В): ", 0.1);
-    }
+    // Віртуальні методи
+    virtual void input();
+    virtual void print() const;
 
-    virtual void showData() const {
-        std::cout << "Модель: " << model << "\n"
-                  << "Потужність: " << power << " Вт\n"
-                  << "Напруга: " << voltage << " В\n";
-    }
-
-    virtual double efficiency() const = 0;
+    // Розрахунок ККД
+    double getEfficiency() const;
 };
+
+// Глобальні функції валідованого вводу
+int getIntInput(const std::string& prompt, int minValue, int maxValue);
+double getDoubleInput(const std::string& prompt, double minValue, double maxValue);
+std::string getStringInput(const std::string& prompt, int maxLength);
+
+#endif
